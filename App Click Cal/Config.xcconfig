@@ -1,0 +1,9 @@
+// OpenAI API Configuration
+OPENAI_API_KEY = open-api-key
+
+// Add this to your project's build settings:
+// 1. Select your project in Xcode
+// 2. Select your target
+// 3. Go to Build Settings
+// 4. Search for "config"
+// 5. Set "Debug" and "Release" configurations to use this file
