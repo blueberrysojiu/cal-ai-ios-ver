@@ -46,6 +46,122 @@
 
 ---
 
+## ✅ PHASE 2 COMPLETED - Models & JSON Serialization
+
+**Completion Date:** 2025-10-07
+**Status:** All model tasks completed successfully
+
+### What Was Completed:
+1. ✅ Created `lib/models/ingredient.dart`:
+   - Properties: `name` (String), `calories` (double)
+   - `toJson()` method for serialization
+   - `fromJson()` factory constructor for deserialization
+   - Safe null handling with default values
+2. ✅ Created `lib/models/food_item.dart`:
+   - Properties: `id` (String, UUID), `name` (String), `timestamp` (DateTime), `imageData` (String, base64), `ingredients` (List<Ingredient>), `totalNutrition` (Map)
+   - `toJson()` method with nested list serialization
+   - `fromJson()` factory constructor with safe parsing
+   - DateTime serialization using ISO8601 format
+   - Handles empty/null ingredient lists gracefully
+3. ✅ Created comprehensive test suite in `test/models_test.dart`:
+   - 8 test cases covering all serialization scenarios
+   - Roundtrip tests (create → JSON → parse → verify)
+   - Edge case tests (empty lists, null fields, missing data)
+   - Sample JSON validation
+
+### Important Notes for Future Development:
+- **DateTime format:** Using `toIso8601String()` for serialization and `DateTime.parse()` for deserialization
+- **ID generation:** FoodItem uses `uuid.v4()` for unique IDs (add `uuid` package if not already present)
+- **Null safety:** All `fromJson` methods provide safe defaults (empty strings, 0.0, empty lists, empty maps)
+- **Image data:** Stored as base64-encoded string in `imageData` field
+- **Nested serialization:** Ingredients list is properly serialized/deserialized within FoodItem
+- **Default values in fromJson:**
+  - Missing strings default to `''`
+  - Missing numbers default to `0.0`
+  - Missing lists default to `[]`
+  - Missing maps default to `{}`
+  - Missing DateTime defaults to `DateTime.now()`
+- **Total nutrition structure:** Map<String, double> containing keys like 'calories', 'protein', 'carbs', 'fat'
+- **JSON compatibility:** Format validated against expected GLM-4.5V API response structure
+
+### Testing Results:
+- ✅ 8/8 tests passed in `test/models_test.dart`
+- ✅ Roundtrip serialization verified (object → JSON → object)
+- ✅ Edge cases handled correctly (empty ingredients, null fields, missing data)
+- ✅ Sample JSON format validated for API compatibility
+- ✅ No serialization errors or data loss
+
+### Files Created:
+- `calai_flutter/lib/models/ingredient.dart`
+- `calai_flutter/lib/models/food_item.dart`
+- `calai_flutter/test/models_test.dart`
+
+---
+
+## ✅ PHASE 3 COMPLETED - API Integration (Groq API with Llama 4 Scout)
+
+**Completion Date:** 2025-10-07
+**Status:** All API integration tasks completed successfully
+
+### What Was Completed:
+1. ✅ Created `lib/services/food_analysis_service.dart`:
+   - Image optimization (resize to max 1024px, JPEG 70% quality)
+   - Base64 image encoding
+   - Groq API HTTP client with proper headers
+   - JSON response parsing into FoodItem model
+   - Comprehensive error handling (auth, network, timeout, malformed responses)
+2. ✅ **API Migration completed: OpenRouter → Groq**
+   - API endpoint: `https://api.groq.com/openai/v1/chat/completions`
+   - Model: `meta-llama/llama-4-scout-17b-16e-instruct` (vision-capable)
+   - Environment variable: `GROQ_API_KEY` (updated from OPENROUTER_API_KEY)
+3. ✅ Created `test_groq.dart` validation script
+4. ✅ Cleaned up obsolete test files (test_api_connectivity.dart, test_glm.dart, test_glm_simple.dart)
+
+### Important Notes for Future Development:
+- **⚠️ CRITICAL - Environment variable:** `.env` file uses `GROQ_API_KEY` (NOT OPENROUTER_API_KEY or GLM_API_KEY)
+- **⚠️ CRITICAL - API endpoint:** `https://api.groq.com/openai/v1/chat/completions` (Groq, not OpenRouter)
+- **⚠️ CRITICAL - Model:** `meta-llama/llama-4-scout-17b-16e-instruct` (DO NOT change without testing)
+- **Service file:** `lib/services/food_analysis_service.dart` - main entry point is `analyzeFood(File imageFile)`
+- **Image handling:** Service accepts File path, handles optimization internally (1024px max, JPEG 70%)
+- **Response format:** OpenAI-compatible (choices → message → content structure)
+- **JSON parsing:** Uses regex extraction to handle responses with extra text
+- **Timeout:** 30 seconds on HTTP requests
+- **Cost:** ~$0.0003 per food analysis (very cheap)
+- **Performance:** ~0.3-0.4 seconds average response time
+
+### ⚠️ DO NOT Break These in Future Phases:
+1. **DO NOT** change `GROQ_API_KEY` variable name in `.env` or service file
+2. **DO NOT** modify API endpoint URL or model name
+3. **DO NOT** change image optimization settings (1024px, 70% quality is tested and working)
+4. **DO NOT** remove regex JSON extraction logic (handles model response variations)
+5. **DO NOT** remove or extend the 30-second timeout without testing
+6. **When integrating with Provider/UI:**
+   - Pass File object to `analyzeFood()` (not base64)
+   - Always wrap calls in try-catch
+   - Show loading state during API call
+   - Handle exception messages for user display
+   - Service returns FoodItem with all nutrition data populated
+
+### Testing Results:
+- ✅ API connectivity validated with real Groq API key
+- ✅ Image optimization working (handles various sizes correctly)
+- ✅ Llama 4 Scout successfully analyzed test food image
+- ✅ JSON response parsed correctly into FoodItem model
+- ✅ Response time: ~0.33 seconds (excellent performance)
+- ✅ Test output validated: "Grilled Chicken and Rice" - 614 cal, 55g protein, 60g carbs, 20g fat, 5 ingredients
+- ✅ Error handling tested (auth failures, network errors)
+
+### Files Created:
+- `calai_flutter/lib/services/food_analysis_service.dart`
+- `calai_flutter/test_groq.dart`
+
+### Files Deleted:
+- `calai_flutter/test_api_connectivity.dart`
+- `calai_flutter/test_glm.dart`
+- `calai_flutter/test_glm_simple.dart`
+
+---
+
 ## Execution Strategy
 
 **Approach**: Build incrementally with testing checkpoints after each phase. No phase begins until the previous phase's tests pass.
