@@ -45,8 +45,8 @@ calai_flutter/
 │   ├── providers/
 │   │   └── food_analysis_provider.dart
 │   ├── widgets/
-│   │   ├── nutrient_card.dart (upcoming)
-│   │   └── food_history_row.dart (upcoming)
+│   │   ├── nutrient_card.dart
+│   │   └── food_history_row.dart
 │   ├── screens/
 │   │   ├── food_analysis_screen.dart (upcoming)
 │   │   ├── food_detail_screen.dart (upcoming)
@@ -55,7 +55,8 @@ calai_flutter/
 ├── test/
 │   ├── models_test.dart
 │   ├── food_history_service_test.dart
-│   └── food_analysis_provider_test.dart
+│   ├── food_analysis_provider_test.dart
+│   └── widgets_test.dart
 ├── .env (gitignored)
 └── pubspec.yaml
 ```
@@ -344,6 +345,83 @@ if (provider.hasCurrentAnalysis) {
 - Supports dependency injection via constructor parameters
 - Tests use `dotenv.testLoad()` to mock API keys
 - All methods verified with 16 comprehensive test cases
+
+---
+
+## Widgets
+
+### NutrientCard (`lib/widgets/nutrient_card.dart`)
+
+**Purpose:** Display a single nutrition metric (calories, protein, carbs, fat)
+
+**Design:** Replicates iOS NutrientCard from `FoodAnalysisView.swift:108-125`
+
+**Properties:**
+- `title` (String): Nutrient label (e.g., "Calories", "Protein")
+- `value` (String): Nutrient value (e.g., "614", "55g")
+
+**Layout:**
+- Vertical Column: title on top, value below
+- Light gray background (`Colors.grey.withOpacity(0.1)`)
+- Rounded corners (10px)
+- Padding: 12px
+- Expanded widget for equal width distribution in horizontal rows
+
+**Usage:**
+```dart
+Row(
+  children: [
+    NutrientCard(title: 'Calories', value: '614'),
+    NutrientCard(title: 'Protein', value: '55g'),
+    NutrientCard(title: 'Carbs', value: '60g'),
+    NutrientCard(title: 'Fat', value: '20g'),
+  ],
+)
+```
+
+**Styling:**
+- Title: 12px, gray color
+- Value: 17px, bold
+
+---
+
+### FoodHistoryRow (`lib/widgets/food_history_row.dart`)
+
+**Purpose:** Display a food item row in the history list
+
+**Design:** Replicates iOS FoodHistoryRow from `FoodHistoryView.swift:58-94`
+
+**Properties:**
+- `foodItem` (FoodItem): The food item to display
+
+**Layout:**
+- Horizontal Row with three sections:
+  1. **Image** (60x60): Rounded corners (8px) or fallback to `Icons.photo`
+  2. **Details** (Expanded): Food name + calories text
+  3. **Time**: Formatted timestamp
+
+**Features:**
+- **Image handling:** Checks if file exists at `imagePath`, displays image or fallback icon
+- **Fallback icon:** `Icons.photo` on gray background when image missing
+- **Calories format:** "{value} calories" (e.g., "614 calories") - integer only
+- **Time format:** "12:30 PM" (12-hour format with AM/PM)
+- **Text overflow:** Food name truncates with ellipsis if too long
+
+**Helper Method:**
+- `_formatTime(DateTime)` - Converts timestamp to readable 12-hour format
+
+**Usage:**
+```dart
+ListView(
+  children: foodItems.map((item) => FoodHistoryRow(foodItem: item)).toList(),
+)
+```
+
+**Styling:**
+- Food name: 17px, semibold
+- Calories: 15px, gray
+- Time: 12px, gray
+- Vertical padding: 8px
 
 ---
 

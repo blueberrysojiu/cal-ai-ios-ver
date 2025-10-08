@@ -11,6 +11,11 @@
 - ✅ **Test each phase independently before moving forward**
 - ✅ **Report test results and wait for approval before proceeding**
 - ✅ **Follow the iOS app's functionality exactly** - no extra features
+- ✅ **Reference iOS Swift files for UI implementation** (Phases 6-8)
+  - Check `App Click Cal/Features/` for exact designs
+  - Replicate layouts, spacing, colors, interactions
+  - Translate SwiftUI patterns to Flutter/Material Design
+  - Goal: Make Flutter app look and feel identical to iOS app
 - ✅ **Handle errors gracefully with user-friendly messages**
 - ✅ **Use safe defaults for null values in JSON parsing**
 

@@ -252,29 +252,89 @@
 
 ---
 
+### ✅ Phase 6: Reusable Widgets
+
+**Completion Date:** 2025-10-09
+**Status:** All widget tasks completed successfully
+
+#### What Was Completed:
+1. ✅ Created `lib/widgets/nutrient_card.dart`:
+   - Replicates exact iOS NutrientCard design from `FoodAnalysisView.swift:108-125`
+   - Vertical layout with title (gray caption) and value (bold headline)
+   - Light gray background (gray opacity 0.1) with rounded corners (10px)
+   - Expanded widget for equal width distribution in horizontal rows
+   - Displays nutrition metrics: calories, protein, carbs, fat
+2. ✅ Created `lib/widgets/food_history_row.dart`:
+   - Replicates exact iOS FoodHistoryRow design from `FoodHistoryView.swift:58-94`
+   - Horizontal layout: 60x60 image + food name/calories + time
+   - Image with rounded corners (8px) or fallback to `Icons.photo` with gray background
+   - File path validation and existence check before loading image
+   - Formats calories as "614 calories" (integer, no decimals)
+   - Formats time as "12:30 PM" (12-hour format with AM/PM)
+   - Handles long food names with text overflow ellipsis
+3. ✅ Created comprehensive test suite in `test/widgets_test.dart`:
+   - 13 test cases covering all widget functionality
+   - NutrientCard rendering tests (4 tests)
+   - FoodHistoryRow rendering tests (9 tests)
+   - Edge case coverage (missing images, long names, time formatting, decimal values)
+
+#### Important Notes:
+- **Design fidelity:** Both widgets precisely replicate iOS SwiftUI designs
+- **Image handling:** FoodHistoryRow checks file existence before loading, gracefully falls back to icon
+- **Time formatting:** Custom `_formatTime()` helper handles all edge cases (midnight, noon, AM/PM)
+- **Reusability:** Both widgets are stateless and can be used across multiple screens
+- **Material Design:** Uses Flutter Material components for consistency
+- **iOS translation:** `VStack → Column`, `HStack → Row`, `Color.gray.opacity(0.1) → Colors.grey.withOpacity(0.1)`
+
+#### Testing Results:
+- ✅ 13/13 tests passed in `test/widgets_test.dart`
+- ✅ NutrientCard renders correctly with all nutrition values
+- ✅ NutrientCard works in horizontal rows with equal width distribution
+- ✅ FoodHistoryRow displays complete food item with name, calories, time
+- ✅ FoodHistoryRow shows fallback icon when imagePath is empty or file doesn't exist
+- ✅ Time formatting works for all edge cases (AM/PM, midnight, noon)
+- ✅ Calories displayed as integers (324 calories, not 324.7)
+- ✅ Long food names handled with ellipsis
+- ✅ `flutter analyze` - 62 info warnings (all pre-existing), **zero warnings from new widget files**
+
+#### Files Created:
+- `calai_flutter/lib/widgets/nutrient_card.dart`
+- `calai_flutter/lib/widgets/food_history_row.dart`
+- `calai_flutter/test/widgets_test.dart`
+
+#### Design Reference:
+- **NutrientCard:** Based on iOS `FoodAnalysisView.swift:108-125`
+- **FoodHistoryRow:** Based on iOS `FoodHistoryView.swift:58-94`
+- Widgets match iOS design exactly, adapted for Flutter/Material Design
+
+---
+
 ## Current Phase
 
-### 🔄 Phase 6: Reusable Widgets
+### 🔄 Phase 7: UI Screens (Core Functionality)
 
-**Goal:** UI components ready for screens
+**Goal:** Functional UI with navigation
 
 #### Tasks:
-1. Create `lib/widgets/nutrient_card.dart` (calories, protein, carbs, fat)
-2. Create `lib/widgets/food_history_row.dart` (list item with thumbnail)
+1. Create `lib/screens/food_analysis_screen.dart` (camera, image picker, results)
+2. Create `lib/screens/food_detail_screen.dart` (full food details)
+3. Create `lib/screens/food_history_screen.dart` (calendar, list, navigation)
 
-#### Testing Checkpoint 6:
-- [ ] Render NutrientCard with sample data
-- [ ] Render FoodHistoryRow with sample FoodItem
-- [ ] Verify image thumbnails display correctly
-- [ ] Test with missing image data (fallback icon)
+#### Testing Checkpoint 7:
+- [ ] Open camera, capture photo, verify image displays
+- [ ] Trigger analysis, verify loading state shows
+- [ ] Verify results display correctly
+- [ ] Navigate to history, select date, verify filtered items
+- [ ] Swipe to delete, verify item removed
+- [ ] Tap item, verify detail screen shows
+- [ ] Test error handling (API failure, camera permission denied)
 
-**PAUSE HERE** - Confirm widgets render correctly
+**PAUSE HERE** - Confirm all screens work independently
 
 ---
 
 ## Next Steps
 
-1. Complete Phase 6 (Reusable Widgets)
-2. Phase 7: UI Screens (Core Functionality)
-3. Phase 8: Main App Integration
-4. Phase 9: Final Testing & Polish
+1. Complete Phase 7 (UI Screens)
+2. Phase 8: Main App Integration
+3. Phase 9: Final Testing & Polish
