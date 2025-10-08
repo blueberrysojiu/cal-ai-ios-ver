@@ -41,9 +41,9 @@ calai_flutter/
 │   │   └── food_item.dart
 │   ├── services/
 │   │   ├── food_analysis_service.dart
-│   │   └── food_history_service.dart (upcoming)
+│   │   └── food_history_service.dart
 │   ├── providers/
-│   │   └── food_analysis_provider.dart (upcoming)
+│   │   └── food_analysis_provider.dart
 │   ├── widgets/
 │   │   ├── nutrient_card.dart (upcoming)
 │   │   └── food_history_row.dart (upcoming)
@@ -53,7 +53,9 @@ calai_flutter/
 │   │   └── food_history_screen.dart (upcoming)
 │   └── main.dart
 ├── test/
-│   └── models_test.dart
+│   ├── models_test.dart
+│   ├── food_history_service_test.dart
+│   └── food_analysis_provider_test.dart
 ├── .env (gitignored)
 └── pubspec.yaml
 ```
@@ -241,18 +243,107 @@ Clear all food items from storage. Useful for testing.
 
 ---
 
-## Providers (Upcoming)
+## Providers
 
 ### FoodAnalysisProvider (`lib/providers/food_analysis_provider.dart`)
 
 **Purpose:** Centralized state management for food analysis
 
-**Planned Functionality:**
-- Expose `FoodAnalysisService` and `FoodHistoryService`
-- Track loading/error states
-- Trigger API calls
-- Save results to storage
-- Notify listeners on state changes
+**Architecture:**
+- Extends `ChangeNotifier` from Provider package
+- Manages instances of `FoodAnalysisService` and `FoodHistoryService`
+- Supports dependency injection for testing
+
+**State Variables:**
+- `bool isLoading` - Tracks if API call is in progress
+- `String? errorMessage` - Holds error message when operations fail
+- `FoodItem? currentAnalysis` - Stores the most recent analysis result
+- `List<FoodItem> foodHistory` - Holds all food items from storage
+- `List<FoodItem> selectedDateItems` - Filtered items for selected date
+- `DateTime selectedDate` - Currently selected date (defaults to today)
+
+**Getters:**
+- `bool get hasError` - Convenience check for error state
+- `bool get hasCurrentAnalysis` - Convenience check for analysis result
+
+**Key Methods:**
+
+#### `Future<void> analyzeFood(File imageFile)`
+Analyzes food image and saves result to storage.
+
+**Flow:**
+1. Sets `isLoading = true`, clears previous errors
+2. Calls `FoodAnalysisService.analyzeFood(imageFile)`
+3. On success: saves to storage via `FoodHistoryService.saveFoodItem()`
+4. Updates `currentAnalysis` with result
+5. Reloads all food items from storage
+6. If analysis is for today, reloads today's items
+7. On error: catches exception and sets `errorMessage`
+8. Always sets `isLoading = false` and calls `notifyListeners()`
+
+#### `Future<void> loadAllFoodItems()`
+Loads all food items from storage.
+- Calls `FoodHistoryService.loadAllFoodItems()`
+- Updates `foodHistory` list
+- Calls `notifyListeners()`
+
+#### `Future<void> loadFoodItemsByDate(DateTime date)`
+Filters food items by specific date.
+- Updates `selectedDate`
+- Calls `FoodHistoryService.getFoodItemsByDate(date)`
+- Updates `selectedDateItems` list
+- Calls `notifyListeners()`
+
+#### `Future<void> deleteFoodItem(String id)`
+Deletes a food item by ID.
+- Calls `FoodHistoryService.deleteFoodItem(id)`
+- Reloads all items and selected date items
+- Calls `notifyListeners()`
+
+#### `void clearError()`
+Clears error message (useful for dismissing error dialogs).
+- Sets `errorMessage = null`
+- Calls `notifyListeners()`
+
+#### `void clearCurrentAnalysis()`
+Clears current analysis (useful for resetting state).
+- Sets `currentAnalysis = null`
+- Calls `notifyListeners()`
+
+**Usage Pattern:**
+```dart
+// Initialize provider (typically in main.dart)
+ChangeNotifierProvider(
+  create: (_) => FoodAnalysisProvider(),
+  child: MyApp(),
+)
+
+// Access in widgets
+final provider = Provider.of<FoodAnalysisProvider>(context);
+final provider = context.watch<FoodAnalysisProvider>(); // reactive
+final provider = context.read<FoodAnalysisProvider>(); // non-reactive
+
+// Trigger analysis
+await provider.analyzeFood(imageFile);
+if (provider.hasError) {
+  showErrorDialog(provider.errorMessage);
+}
+
+// Show loading state
+if (provider.isLoading) {
+  return CircularProgressIndicator();
+}
+
+// Display results
+if (provider.hasCurrentAnalysis) {
+  return FoodDetailsView(provider.currentAnalysis!);
+}
+```
+
+**Testing:**
+- Supports dependency injection via constructor parameters
+- Tests use `dotenv.testLoad()` to mock API keys
+- All methods verified with 16 comprehensive test cases
 
 ---
 
@@ -349,6 +440,23 @@ final normalizedDate = DateTime(date.year, date.month, date.day);
 - Don't assume `deleteFoodItem()` will throw an error for missing IDs
 
 **Why:** This pattern ensures data persistence works correctly and UX remains smooth.
+
+### 11. FoodAnalysisProvider State Management Pattern
+**DO NOT:**
+- Forget to call `notifyListeners()` after state changes
+- Modify state directly without using provider methods
+- Create multiple provider instances (use single instance via ChangeNotifierProvider)
+- Access `_analysisService` or `_historyService` directly from UI (use provider methods)
+
+**DO:**
+- Always use `context.watch<FoodAnalysisProvider>()` for reactive UI updates
+- Use `context.read<FoodAnalysisProvider>()` for one-time actions (button clicks)
+- Check `provider.isLoading` before triggering operations
+- Check `provider.hasError` and display `provider.errorMessage` to users
+- Call `provider.clearError()` after showing error to user
+- Handle null cases for `provider.currentAnalysis` and empty lists
+
+**Why:** This pattern ensures reactive UI updates work correctly and prevents state synchronization issues.
 
 ---
 
