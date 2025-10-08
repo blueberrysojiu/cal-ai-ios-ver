@@ -40,6 +40,8 @@ dependencies:
   provider: ^6.1.1
   table_calendar: ^3.0.9
   flutter_dotenv: ^5.1.0
+  image: ^4.0.17
+  uuid: ^4.0.0
 
 dev_dependencies:
   flutter_test:

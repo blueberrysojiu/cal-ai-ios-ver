@@ -9,7 +9,7 @@ void main() {
       // Create an ingredient
       final ingredient = Ingredient(
         name: 'Rice',
-        amount: '100g',
+        calories: 130.0,
       );
 
       // Convert to JSON
@@ -21,7 +21,7 @@ void main() {
 
       // Verify
       expect(parsedIngredient.name, ingredient.name);
-      expect(parsedIngredient.amount, ingredient.amount);
+      expect(parsedIngredient.calories, ingredient.calories);
     });
 
     test('Ingredient handles missing fields', () {
@@ -29,15 +29,15 @@ void main() {
       final ingredient = Ingredient.fromJson({});
 
       expect(ingredient.name, '');
-      expect(ingredient.amount, '');
+      expect(ingredient.calories, 0.0);
     });
 
     test('Ingredient handles null values', () {
-      final json = {'name': null, 'amount': null};
+      final json = {'name': null, 'calories': null};
       final ingredient = Ingredient.fromJson(json);
 
       expect(ingredient.name, '');
-      expect(ingredient.amount, '');
+      expect(ingredient.calories, 0.0);
     });
   });
 
@@ -50,8 +50,8 @@ void main() {
         imagePath: '/path/to/image.jpg',
         timestamp: DateTime(2025, 10, 6, 12, 30),
         ingredients: [
-          Ingredient(name: 'Chicken', amount: '150g'),
-          Ingredient(name: 'Rice', amount: '200g'),
+          Ingredient(name: 'Chicken', calories: 250.0),
+          Ingredient(name: 'Rice', calories: 250.0),
         ],
         calories: 500.0,
         protein: 30.5,
@@ -73,7 +73,7 @@ void main() {
       expect(parsedFoodItem.timestamp, foodItem.timestamp);
       expect(parsedFoodItem.ingredients.length, 2);
       expect(parsedFoodItem.ingredients[0].name, 'Chicken');
-      expect(parsedFoodItem.ingredients[1].amount, '200g');
+      expect(parsedFoodItem.ingredients[1].calories, 250.0);
       expect(parsedFoodItem.calories, 500.0);
       expect(parsedFoodItem.protein, 30.5);
       expect(parsedFoodItem.carbs, 60.2);
@@ -133,9 +133,9 @@ void main() {
         'imagePath': '/storage/image123.jpg',
         'timestamp': '2025-10-06T12:30:00.000',
         'ingredients': [
-          {'name': 'Grilled Chicken Breast', 'amount': '200g'},
-          {'name': 'Broccoli', 'amount': '100g'},
-          {'name': 'Carrots', 'amount': '80g'},
+          {'name': 'Grilled Chicken Breast', 'calories': 250.0},
+          {'name': 'Broccoli', 'calories': 100.0},
+          {'name': 'Carrots', 'calories': 100.0},
         ],
         'calories': 450.0,
         'protein': 45.0,

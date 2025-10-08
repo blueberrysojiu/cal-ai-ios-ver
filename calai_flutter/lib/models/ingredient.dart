@@ -1,17 +1,17 @@
 class Ingredient {
   final String name;
-  final String amount;
+  final double calories;
 
   Ingredient({
     required this.name,
-    required this.amount,
+    required this.calories,
   });
 
   // Convert Ingredient to JSON
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'amount': amount,
+      'calories': calories,
     };
   }
 
@@ -19,7 +19,7 @@ class Ingredient {
   factory Ingredient.fromJson(Map<String, dynamic> json) {
     return Ingredient(
       name: json['name'] as String? ?? '',
-      amount: json['amount'] as String? ?? '',
+      calories: (json['calories'] as num?)?.toDouble() ?? 0.0,
     );
   }
 }

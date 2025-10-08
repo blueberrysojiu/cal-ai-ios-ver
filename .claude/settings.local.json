@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git restore:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nPhase 3 Complete: API Integration with Groq (Llama 4 Scout)\n\n- Migrated from OpenRouter to Groq API\n- Implemented food_analysis_service.dart with image optimization and vision API\n- Added .env to .gitignore to protect API keys\n- Created test_groq.dart for validation\n- Updated claude.md with Phase 3 completion details\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
