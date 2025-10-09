@@ -1,6 +1,6 @@
 # CalAI Flutter Migration - Project Guide
 
-**Current Phase:** Phase 6 - Reusable Widgets
+**Current Phase:** Phase 8 - UI Screens (Core Functionality)
 
 ---
 
@@ -10,7 +10,7 @@ This project uses a modular documentation system. **Read the files below for com
 
 ### 📋 [.claude/current-status.md](.claude/current-status.md)
 **What's done, what's next**
-- ✅ Completed phases (1-4) with full details
+- ✅ Completed phases (1-6) with full details
 - 🔄 Current phase status and tasks
 - 📝 Testing results and files created/modified
 - 📅 Completion dates
@@ -75,9 +75,9 @@ calai_flutter/
 │   ├── models/          ✅ Ingredient, FoodItem
 │   ├── services/        ✅ FoodAnalysisService, FoodHistoryService
 │   ├── providers/       ✅ FoodAnalysisProvider
-│   ├── widgets/         🔄 (Phase 6 - current)
-│   └── screens/         ⏳ (Phase 7)
-├── test/                ✅ models_test.dart, food_history_service_test.dart, food_analysis_provider_test.dart
+│   ├── widgets/         ✅ NutrientCard, FoodHistoryRow
+│   └── screens/         🔄 (Phase 8 - current)
+├── test/                ✅ models_test.dart, food_history_service_test.dart, food_analysis_provider_test.dart, widgets_test.dart
 └── .env                 ✅ (gitignored)
 ```
 
@@ -87,12 +87,13 @@ calai_flutter/
 - ✅ Phase 3: API Integration (Groq with Llama 4 Scout)
 - ✅ Phase 4: Storage Service (SharedPreferences)
 - ✅ Phase 5: State Management (Provider)
+- ✅ Phase 6: Reusable Widgets (NutrientCard, FoodHistoryRow)
+- ✅ Phase 7: Device Deployment & Testing
 
 ### Next Phases
-- 🔄 Phase 6: Reusable Widgets - **CURRENT**
-- ⏳ Phase 7: UI Screens (Core Functionality)
-- ⏳ Phase 8: Main App Integration
-- ⏳ Phase 9: Final Testing & Polish
+- 🔄 Phase 8: UI Screens (Core Functionality) - **CURRENT**
+- ⏳ Phase 9: Main App Integration
+- ⏳ Phase 10: Final Testing & Polish
 
 ---
 
@@ -136,11 +137,23 @@ When the user says **"update claude.md with the changes we've made so far"**:
 
 ### Standard Phase Flow:
 1. ✅ Read relevant .claude/*.md files for context
-2. 🔨 Implement phase tasks
-3. 🧪 Run testing checkpoint
-4. 📊 Report results to user
-5. ⏸️ **PAUSE** - Wait for user approval
-6. ➡️ Proceed to next phase (after approval)
+2. 📱 **Check iOS Swift implementation for UI reference** (for Phases 6-8)
+3. 🔨 Implement phase tasks
+4. 🧪 Run testing checkpoint
+5. 📊 Report results to user
+6. ⏸️ **PAUSE** - Wait for user approval
+7. ➡️ Proceed to next phase (after approval)
+
+### iOS Swift Reference (Frontend Phases)
+**For Phases 6-8 (Widgets, Screens, Main App):**
+- **ALWAYS** check the Swift files in `App Click Cal/` for iOS design reference
+- Key reference files:
+  - `Features/Analysis/FoodAnalysisView.swift` - Analysis screen & NutrientCard
+  - `Features/History/FoodHistoryView.swift` - History screen & FoodHistoryRow
+  - `Core/Models/FoodItem.swift` - Data models
+  - `ContentView.swift` - Main app structure with tabs
+- **Goal:** Replicate iOS design exactly in Flutter, adapting for Material Design
+- **Translation:** SwiftUI → Flutter (VStack → Column, HStack → Row, etc.)
 
 ### If Tests Fail:
 1. 🛑 **STOP** - Do not proceed
@@ -176,4 +189,36 @@ See `.claude/architecture.md` → "DO NOT Break These" for full details.
 
 ---
 
-**Ready to continue Phase 5!** 🚀
+## iOS Design Reference
+
+**Location:** `App Click Cal/Features/` (Swift/SwiftUI files)
+
+When implementing UI (Phases 6-8), always reference the iOS implementation:
+- Check Swift files for exact design specifications
+- Match layouts, spacing, colors, and interactions
+- Adapt SwiftUI patterns to Flutter/Material Design
+- Goal: Flutter app should look and feel identical to iOS app
+
+**Key Files:**
+- `FoodAnalysisView.swift` - Analysis screen with camera, results, NutrientCard
+- `FoodHistoryView.swift` - History screen with calendar, list, FoodHistoryRow
+- `ContentView.swift` - Tab navigation structure
+
+---
+
+**Ready to continue Phase 8!** 🚀
+
+---
+
+## Phase 7 Summary: Device Deployment
+
+Phase 7 successfully deployed the app to a physical Android device (Samsung Galaxy A22, Android 13). Key accomplishments:
+
+- ✅ Configured Android development environment (SDK licenses, NDK, Build Tools, CMake)
+- ✅ Connected physical device with USB debugging
+- ✅ **Fixed critical .env bug:** Changed `GLM_API_KEY` → `GROQ_API_KEY` and added real API key
+- ✅ Deployed app successfully (first build: 741s, subsequent: ~60s)
+- ✅ Verified app launches and .env loads correctly
+- ✅ User confirmed: "It works perfectly"
+
+**Critical lesson learned:** The .env file had the wrong variable name (`GLM_API_KEY` instead of `GROQ_API_KEY`), which was caught during deployment testing. This has been fixed and documented.

@@ -309,9 +309,78 @@
 
 ---
 
+### ✅ Phase 7: Device Deployment & Testing
+
+**Completion Date:** 2025-10-09
+**Status:** App successfully deployed to physical Android device
+
+#### What Was Completed:
+1. ✅ Configured Android development environment:
+   - Accepted Android SDK licenses (6 licenses)
+   - Installed NDK (Side by side) 27.0.12077973
+   - Installed Android SDK Build-Tools 35
+   - Installed CMake 3.22.1
+2. ✅ Connected physical device (Samsung Galaxy A22, Android 13):
+   - Enabled USB debugging
+   - Device detected: SM A226B (R9TRB1CW71Z)
+3. ✅ Fixed API key configuration:
+   - Updated `.env` file: `GLM_API_KEY` → `GROQ_API_KEY`
+   - Set real Groq API key: `gsk_PKPH6QAAKBM07nmr7BzwWGdyb3FY...`
+4. ✅ Deployed app to physical device:
+   - First build: 741.8s (with toolchain downloads)
+   - Second build (after restart): ~60s (cached)
+   - App successfully installed and running
+   - Hot reload/restart working
+
+#### Important Notes:
+- **⚠️ CRITICAL - API key fixed:** `.env` now uses `GROQ_API_KEY` (was incorrectly `GLM_API_KEY`)
+- **Device:** Samsung Galaxy A22 (SM A226B), Android 13 (API 33), arm64 architecture
+- **Flutter DevTools:** Available at http://127.0.0.1:9101 when app is running
+- **Build performance:** First build downloads Android build tools (~5 minutes), subsequent builds are fast (~1 minute)
+- **USB debugging required:** Device must have Developer Options enabled and USB debugging turned on
+- **Hot restart command:** Press `R` in Flutter terminal to reload .env changes
+
+#### Testing Results:
+- ✅ App launches successfully on physical device
+- ✅ .env file loads correctly (verified in logs)
+- ✅ GROQ_API_KEY properly loaded from environment
+- ✅ App rendering with Impeller backend (Vulkan)
+- ✅ Hot restart working (killed and restarted app successfully)
+- ✅ User confirmed: "It works perfectly"
+
+#### Files Modified:
+- `calai_flutter/.env` (updated API key name and added real key)
+
+#### Deployment Commands:
+```bash
+# Check connected devices
+flutter devices
+
+# Deploy to specific device
+flutter run -d R9TRB1CW71Z
+
+# Hot restart (reload .env)
+R (press in terminal)
+
+# Quit app
+q (press in terminal)
+```
+
+#### Issues Encountered & Resolved:
+1. **Phone not detected initially:**
+   - Resolution: Changed USB port, device appeared
+2. **API key showing as null:**
+   - Root cause: .env had wrong variable name (`GLM_API_KEY` instead of `GROQ_API_KEY`)
+   - Resolution: Updated .env file and hot restarted app
+3. **Interactive license acceptance:**
+   - Issue: `flutter doctor --android-licenses` requires manual input
+   - Resolution: User accepted licenses manually in terminal
+
+---
+
 ## Current Phase
 
-### 🔄 Phase 7: UI Screens (Core Functionality)
+### 🔄 Phase 8: UI Screens (Core Functionality)
 
 **Goal:** Functional UI with navigation
 
@@ -320,7 +389,7 @@
 2. Create `lib/screens/food_detail_screen.dart` (full food details)
 3. Create `lib/screens/food_history_screen.dart` (calendar, list, navigation)
 
-#### Testing Checkpoint 7:
+#### Testing Checkpoint 8:
 - [ ] Open camera, capture photo, verify image displays
 - [ ] Trigger analysis, verify loading state shows
 - [ ] Verify results display correctly
@@ -335,6 +404,6 @@
 
 ## Next Steps
 
-1. Complete Phase 7 (UI Screens)
-2. Phase 8: Main App Integration
-3. Phase 9: Final Testing & Polish
+1. Complete Phase 8 (UI Screens)
+2. Phase 9: Main App Integration
+3. Phase 10: Final Testing & Polish
